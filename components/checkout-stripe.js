@@ -4,9 +4,8 @@ import CheckoutForm from './checkout-stripe-form';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe('pk_live_51OZIoJLKOUVvvhg9dIqbbe9n2yQhIPGU0JS0ew6xxGd6I7OkA6XlC5tkQsFk5d5BTwQiPbtd9cC7NfSU68cERUxJ00BQtqucsf');
+const stripePromise = loadStripe('');
 
-//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
 
 export default function CheckoutStripe() {
   const options = {
