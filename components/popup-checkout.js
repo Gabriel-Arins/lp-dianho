@@ -1,4 +1,5 @@
 import CheckoutStripe from "./checkout-stripe";
+import Checkout from "./checkout";
 
 export default function Modal({ onClose }) {
     return (
@@ -12,7 +13,7 @@ export default function Modal({ onClose }) {
                     </div>
                     <div className="bg-black px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <h1 className="text-center w-full text-2xl font-bold mb-2">Pague com Mercado Pago</h1>
-                        <CheckoutStripe />
+                        <Checkout />
                     </div>
                 </div>
             </div>

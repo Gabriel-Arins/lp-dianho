@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+'use client'
+import React, { useState }  from 'react';
+import axios from 'axios';
+
 import {
   initMercadoPago,
   createCardToken,
@@ -7,87 +10,93 @@ import {
   ExpirationDate,
 } from '@mercadopago/sdk-react';
 
-initMercadoPago('YOUR-PUBLIC-KEY');
+initMercadoPago('APP_USR-a88c7067-020c-4a1d-8b27-b4b34150bc55');
 
-const Checkoutv2 = () => {
- const [formData, setFormData] = useState({
-   cardholderName: '',
-   identificationType: '',
-   identificationNumber: '',
- });
+/* const mp = new MercadoPago("APP_USR-a88c7067-020c-4a1d-8b27-b4b34150bc55", {
+  locale: "pt-BR",
+  advancedFraudPrevention: true,
+});
+ */
+const App = () => {
+  const [cardHolderName, setCardHolderName] = useState('');
+  const [identificationType, setIdentificationType] = useState('');
+  const [identificationNumber, setidentificationNumber] = useState('');
+  
+  
+  const cardToken = async () => {
+    const response = await createCardToken({
+      cardholderName: cardHolderName,
+      identificationType: identificationType,
+      identificationNumber: identificationNumber,
+    })
 
- const cardToken = async () => {
-   const response = await createCardToken({
-     cardholderName: formData.cardholderName,
-     identificationType: formData.identificationType,
-     identificationNumber: formData.identificationNumber,
-   });
-   console.log('Card Token Response = ', response);
- }
 
- const handleInputChange = (e) => {
-   setFormData({
-     ...formData,
-     [e.target.name]: e.target.value,
-   });
- }
+    console.log('Card Token Response = ', response)
 
- return (
-   <div className="max-w-md mx-auto bg-white p-8 rounded border shadow-md">
-     <div className="mb-4">
-       <label className="block text-gray-700 font-bold mb-2">Cardholder Name</label>
-       <input
-         type="text"
-         name="cardholderName"
-         value={formData.cardholderName}
-         onChange={handleInputChange}
-         className="w-full p-2 text-black border rounded"
-         placeholder="Enter Cardholder Name"
-       />
-     </div>
 
-     <div className="mb-4">
-       <label className="block text-gray-700 font-bold mb-2">Identification Type</label>
-       <input
-         type="text"
-         name="identificationType"
-         value={formData.identificationType}
-         onChange={handleInputChange}
-         className="w-full text-black p-2 border rounded"
-         placeholder="Enter Identification Type"
-       />
-     </div>
+    /* const bin = response.first_six_digits;
+    
+    const getCardDetails = async (bin) => {
+      const options = {
+        method: 'GET',
+        url: `https://api.freebinchecker.com/bin/${bin}`,
+        headers: {
+          'content-type': 'application/json',
+        }
+      };
+      
+      try {
+        const response = await axios.request(options);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const cardDetails = await getCardDetails(bin); */
 
-     <div className="mb-4">
-       <label className="block text-gray-700 font-bold mb-2">Identification Number</label>
-       <input
-         type="text"
-         name="identificationNumber"
-         value={formData.identificationNumber}
-         onChange={handleInputChange}
-         className="w-full text-black p-2 border rounded"
-         placeholder="Enter Identification Number"
-       />
-     </div>
+    /* console.log('Card Details = ', cardDetails) */
+    const payment = await fetch('/api/pagamentoMercadoPago', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(response.id/* , cardDetails */),
+    });
+    console.log('Payment Response = ', payment)
+  }
+  return (
+    <>
+      <input
+      className="pl-2 bg-slate-700 sm:w-[80%] w-[95%] py-2 rounded-md text-white"
+        type="text"
+        placeholder="Insira o nome impresso no cartão"
+        value={cardHolderName}
+        onChange={e => setCardHolderName(e.target.value)}
+      />
+      <select
+      className="pl-2 bg-slate-700 sm:w-[80%] w-[95%] py-2 rounded-md text-white"
+        value={identificationType}
+        onChange={e => setIdentificationType(e.target.value)}
+      >
+        <option value="">Selecione o tipo de documento</option>
+        <option value="RG">RG</option>
+        <option value="CPF">CPF</option>
+        <option value="type3">CNPJ</option>
+      </select>
+      <input
+      className="pl-2 bg-slate-700 sm:w-[80%] w-[95%] py-2 rounded-md text-white"
+        type="text"
+        placeholder="Número de Documento"
+        value={identificationNumber}
+        onChange={e => setidentificationNumber(e.target.value)}
+      />
+      <CardNumber placeholder='Card Number' />
+      <SecurityCode placeholder='Security Code' />
+      <ExpirationDate placeholder='Expiration Date' mode='short' />
 
-     <div className="mb-4">
-       <label className="block text-gray-700 font-bold mb-2">Card Number</label>
-       <CardNumber placeholder='Card Number' className="w-full p-2 border rounded" />
-     </div>
-
-     <div className="mb-4">
-       <label className="block text-gray-700 font-bold mb-2">Security Code</label>
-       <SecurityCode placeholder='Security Code' className="w-full p-2 border rounded" />
-     </div>
-
-     <div className="mb-4">
-       <label className="block text-gray-700 font-bold mb-2">Expiration Date</label>
-       <ExpirationDate placeholder='Expiration Date' mode='short' className="w-full p-2 border rounded" />
-     </div>
-
-     <button className="bg-green-500 text-white p-2 rounded hover:bg-green-600" onClick={() => cardToken()}>Pay</button>
-   </div>
- );
+      <button onClick={() => cardToken()}>Pay</button>
+    </>
+  );
 };
 
-export default Checkoutv2;
+export default App;

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import dianho from '../public/dianho.png';
 import scrumdown from '../public/1.png';
 import { useState } from 'react';
-import Modal from '@/components/popup-checkout';
+import Modal from '../components/popup-checkout';
 
 
 const MainContent = () => {
